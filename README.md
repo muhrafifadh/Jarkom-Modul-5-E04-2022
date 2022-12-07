@@ -13,6 +13,7 @@ M Labib Alfaraby | 5025201083
 
 ### (A) Tugas pertama kalian yaitu membuat topologi jaringan sesuai dengan rancangan yang diberikan Loid dibawah ini:
 ![modul1](https://user-images.githubusercontent.com/81162174/206151572-c498b149-3f00-4c67-b29b-b97edb8e5c24.png)
+
 Keterangan :	Eden adalah DNS Server
 WISE adalah DHCP Server
 		Garden dan SSS adalah Web Server
