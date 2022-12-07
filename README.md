@@ -11,10 +11,16 @@ M Labib Alfaraby | 5025201083
 ## Soal Jarkom-Modul-5 2021
 - [Soal] https://docs.google.com/document/d/1b-tRRx2BLu1RxCgXxnoI2lYJbG9E0C08adRppePfHxk/edit
 
-### (A) Tugas pertama kalian yaitu membuat topologi jaringan sesuai dengan rancangan yang diberikan Luffy dibawah ini:
-![image](https://user-images.githubusercontent.com/36225278/145450558-89f3512b-93e2-4559-9382-a26b1a5b8dcd.png)
-
-### (B) Konfigurasi IP dengan VLSM (Variable Length Subnet Masking) :
+### (A) Tugas pertama kalian yaitu membuat topologi jaringan sesuai dengan rancangan yang diberikan Loid dibawah ini:
+![modul1](https://user-images.githubusercontent.com/81162174/206151572-c498b149-3f00-4c67-b29b-b97edb8e5c24.png)
+Keterangan :	Eden adalah DNS Server
+WISE adalah DHCP Server
+		Garden dan SSS adalah Web Server
+		Jumlah Host pada Forger adalah 62 host
+		Jumlah Host pada Desmond adalah 700 host
+		Jumlah Host pada Blackbell adalah 255 host
+		Jumlah Host pada Briar adalah 200 host
+### Untuk menjaga perdamaian dunia, Loid ingin meminta kalian untuk membuat topologi tersebut menggunakan teknik CIDR atau VLSM setelah melakukan subnetting.
 ![image](https://user-images.githubusercontent.com/36225278/145450611-e5eba9ff-86a6-4e07-92df-419c056d3e67.png)
 
 ### Tree :
@@ -185,7 +191,7 @@ iface eth0 inet static
        gateway 192.173.0.17
 ```
 
-### (C) Routing
+### (C) Anya, putri pertama Loid, juga berpesan kepada anda agar melakukan Routing agar setiap perangkat pada jaringan tersebut dapat terhubung.
 
 ```
 route add -net 192.173.1.0 netmask 255.255.255.0 gw 192.173.0.6                                     
@@ -196,7 +202,7 @@ route add -net 192.173.0.128 netmask 255.255.255.128 gw 192.173.0.2
 route add -net 192.173.0.16 netmask 255.255.255.248 gw 192.173.0.2 
 ```
 
-### (D) Tugas berikutnya adalah memberikan ip pada subnet Blueno, Cipher, Fukurou, dan Elena secara dinamis menggunakan bantuan DHCP server. Kemudian kalian ingat bahwa kalian harus setting DHCP Relay pada router yang menghubungkannya.
+### (D) Tugas berikutnya adalah memberikan ip pada subnet Forger, Desmond, Blackbell, dan Briar secara dinamis menggunakan bantuan DHCP server. Kemudian kalian ingat bahwa kalian harus setting DHCP Relay pada router yang menghubungkannya.
 
 1. Install `apt-get install isc-dhcp-relay -y` pada foosha, water7, dan guanhao, `apt-get install isc-dhcp-server` pada Jipangu
 2. Pada Router (foosha, water7 dan guanhao) Edit file `/etc/sysctl.conf` deengan command
@@ -258,7 +264,7 @@ subnet 192.173.0.16 netmask 255.255.255.248{
 7. Buka file `/etc/network/interfaces`. Command konfigurasi lama (static) dan ubah ip Blueno, Cipher, Fukurou, dan Elena dengan command
 8. Lakukan restart di node yang dijadikan ip dhcp
 
-## (1) Agar topologi yang kalian buat dapat mengakses keluar, kalian diminta untuk mengkonfigurasi Foosha menggunakan iptables, tetapi Luffy tidak ingin menggunakan MASQUERADE.
+## (1) Agar topologi yang kalian buat dapat mengakses keluar, kalian diminta untuk mengkonfigurasi Strix menggunakan iptables, tetapi Loid tidak ingin menggunakan MASQUERADE.
 
 #### Foosha 
 
@@ -271,8 +277,7 @@ Keterangan:
 -> ip eth0 akan selalu berganti ketika restart node pada foosha atau restart GNS3 dengan rentang IP yang sudah dijelaskan
 -> Cara mengetahui eth0, masukan command ip a pada foosha
 
-## (2) Kalian diminta untuk mendrop semua akses HTTP dari luar Topologi kalian pada server yang memiliki ip DHCP dan DNS Server demi menjaga keamanan.
-#### Foosha
+## (2) Kalian diminta untuk melakukan drop semua TCP dan UDP dari luar Topologi kalian pada server yang merupakan DHCP Server demi menjaga keamanan.
 
 Command yang digunakan yaitu `iptables -A FORWARD -p tcp --dport 80 -d 192.173.0.16/29 -i eth0 -j DROP`
 
@@ -301,7 +306,7 @@ Keterangan:
 ![messageImage_1638870734466](https://user-images.githubusercontent.com/36225278/145457665-ed2a9e32-b39d-4720-993a-b76fb1173d4d.jpg)
 
 
-## (3) Karena kelompok kalian maksimal terdiri dari 3 orang. Luffy meminta kalian untuk membatasi DHCP dan DNS Server hanya boleh menerima maksimal 3 koneksi ICMP secara bersamaan menggunakan iptables, selebihnya didrop.
+## (3) Loid meminta kalian untuk membatasi DHCP dan DNS Server hanya boleh menerima maksimal 2 koneksi ICMP secara bersamaan menggunakan iptables, selebihnya didrop.
 
 #### Jipangu dan Doriki
 Diberikan komen:
@@ -337,8 +342,7 @@ Kita ping ke Jipangu secara bersamaan,
 Pada saat yang ke-4 mengakses node yang sama, maka ditolak
 ![messageImage_1639067251507](https://user-images.githubusercontent.com/36225278/145460468-d2eef565-ba96-4c46-bab7-596b08ed6f20.jpg)
 
-## (4) Kemudian kalian diminta untuk membatasi akses ke Doriki yang berasal dari subnet Blueno, Cipher, Elena dan Fukuro dengan beraturan sebagai berikut :Akses dari subnet Blueno dan Cipher hanya diperbolehkan pada pukul 07.00 - 15.00 pada hari Senin sampai Kamis.
-
+## (4) Akses menuju Web Server hanya diperbolehkan disaat jam kerja yaitu Senin sampai Jumat pada pukul 07.00 - 16.00.
 #### Doriki
 ```
 iptables -A INPUT -s 192.173.0.128/25 -m time --timestart 07:00 --timestop 15:00 --weekdays Mon,Tue,Wed,Thu -j ACCEPT
@@ -371,7 +375,7 @@ Saat Hari Senin - Kamis antara jam 07.00 - 15.00
 Saat Hari Senin - Kamis selain jam 07.00 - 15.00
 ![image](https://user-images.githubusercontent.com/36225278/145458662-d1c9658d-eb8a-4ac0-a60a-ede0820beef4.png)
 
-## (5) Akses dari subnet Elena dan Fukuro hanya diperbolehkan pada pukul 15.01 hingga pukul 06.59 setiap harinya.Selain itu di reject
+## (5) Karena kita memiliki 2 Web Server, Loid ingin Ostania diatur sehingga setiap request dari client yang mengakses Garden dengan port 80 akan didistribusikan secara bergantian pada SSS dan Garden secara berurutan dan request dari client yang mengakses SSS dengan port 443 akan didistribusikan secara bergantian pada Garden dan SSS secara berurutan.
 
 #### Doriki 
 Untuk paket yang berasal dari ELENA menggunakan perintah:
@@ -398,7 +402,7 @@ Saat selain pukul 15.01 - 06.59
 ![messageImage_1639067956156](https://user-images.githubusercontent.com/36225278/145459126-7f6c8580-cef2-43fd-9aa4-013d59dc0ed4.jpg)
 
 
-## (6) Karena kita memiliki 2 Web Server, Luffy ingin Guanhao disetting sehingga setiap request dari client yang mengakses DNS Server akan didistribusikan secara bergantian pada Jorge dan Maingate
+## (6) Karena Loid ingin tau paket apa saja yang di-drop, maka di setiap node server dan router ditambahkan logging paket yang di-drop dengan standard syslog level.
 
 #### Doriki
 - Membuat domain (DNS) yang mengarah ke IP random pada file `/etc/bind/named.conf`
