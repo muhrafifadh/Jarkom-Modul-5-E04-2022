@@ -356,7 +356,7 @@ Keterangan:
 
 ### Testing
 
-Saat Hari Senin - Jumat antara jam 07.00 - 16.00
+Saat Hari Senin - Jumat antara jam 07.00 - 16.00 </br>
 <img width="441" alt="image" src="https://user-images.githubusercontent.com/87472849/206823925-1225df63-5a28-4176-ad6e-b4474d2709fb.png">
 
 ## (5) Karena kita memiliki 2 Web Server, Loid ingin Ostania diatur sehingga setiap request dari client yang mengakses Garden dengan port 80 akan didistribusikan secara bergantian pada SSS dan Garden secara berurutan dan request dari client yang mengakses SSS dengan port 443 akan didistribusikan secara bergantian pada Garden dan SSS secara berurutan.
