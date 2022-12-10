@@ -33,86 +33,96 @@ Subnet serta jumlah IP untuk mendapatkan netmask dari tiap subnet ditunjukkan ol
 | Subnet  | Jumlah IP | Netmask | subnetmask | nid |
 | :---         |     :---:      |     :---:      |     :---:      |          ---: |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| A1  | 2 | /30 | 255.255.255.252 | 192.173.0.0 |
-| A2  | 2 | /30 | 255.255.255.252 | 192.173.0.4 |
-| A3  | 201 | /24 | 255.255.255.0 | 192.173.1.0 |
-| A4  | 301 | /23 | 255.255.254.0 | 192.173.2.0 |
-| A5  | 101 | /25 | 255.255.255.128 | 192.173.0.128 |
-| A6  | 701 | /22 | 255.255.252.0	 | 192.173.4.0 |
-| A7  | 4 | /29 | 255.255.255.248 | 192.173.0.16 |
-| A8  | 4 | /29 | 255.255.255.248 | 192.173.0.24 |
-| Total  | 1361 | /21 | 255.255.248.0 | - |
+| A1  | 2 | /30 | 255.255.255.252 | 192.194.0.0 |
+| A2  | 2 | /30 | 255.255.255.252 | 192.194.0.4 |
+| A3  | 201 | /24 | 255.255.255.0 | 192.194.1.0 |
+| A4  | 256 | /23 | 255.255.254.0 | 192.194.2.0 |
+| A5  | 701 | /22 | 255.255.255.128 | 192.194.4.0|
+| A6  | 63 | /25 | 255.255.252.0	 | 192.194.0.128 |
+| A7  | 3 | /29 | 255.255.255.248 | 192.194.0.16 |
+| A8  | 3 | /29 | 255.255.255.248 | 192.194.0.24 |
+| Total  | 1231 | /21 | 255.255.248.0 | - |
 
 SETTING INTERFACE PADA GNS3
 
-- Foosha
+- Strix
 
 ```
 auto eth0
 iface eth0 inet dhcp
 
+# ke Westalis
 auto eth1
 iface eth1 inet static
-        address 192.173.0.1
+        address 192.194.0.1
         netmask 255.255.255.252
 
+# ke Ostania
 auto eth2
 iface eth2 inet static
-         address 192.173.0.5
+         address 192.194.0.5
          netmask 255.255.255.252
 ```
 
-- Water7
+- Westalis
 
 ```
+# ke Strix
 auto eth0
 iface eth0 inet static
-        address 192.173.0.2
+        address 192.194.0.2
         netmask 255.255.255.252
-        gateway 192.173.0.1
+        gateway 192.194.0.1
 
+# ke Switch Kiri
 auto eth1
 iface eth1 inet static
-        address 192.173.0.17
+        address 192.194.0.17
         netmask 255.255.255.248
 
+# ke Forger
 auto eth2
 iface eth2 inet static
-         address 192.173.0.129
+         address 192.194.0.129
          netmask 255.255.255.128
 
+# ke Desmond
 auto eth3
 iface eth3 inet static
-         address 192.173.4.1
+         address 192.194.4.1
          netmask 255.255.252.0
 ```
 
-- Guanhao
+- Ostania
 
 ```
+# ke Strix
 auto eth0
 iface eth0 inet static
-          address 192.173.0.6
+          address 192.194.0.6
           netmask 255.255.255.252
-          gateway 192.173.0.5
+          gateway 192.194.0.5
 
+# ke Switch Kanan
 auto eth1
 iface eth1 inet static
-          address 192.173.0.25
+          address 192.194.0.25
           netmask 255.255.255.248
 
+# ke Blackbell
 auto eth2
 iface eth2 inet static
-          address 192.173.1.1
-          netmask 255.255.255.0
+          address 192.194.2.1
+          netmask 255.255.254.0
 
+# ke Briar
 auto eth3
 iface eth3 inet static
-           address 192.173.2.1
-          netmask 255.255.254.0
+           address 192.194.1.1
+          netmask 255.255.255.0
 ```
 
-- Blueno
+- Eden
 
 ```
 auto eth0
@@ -122,34 +132,34 @@ iface eth0 inet static
       gateway 192.173.0.129
 ```
 
-- Chiper
+- WISE
 
 ```
 auto eth0
 iface eth0 inet static
-       address 192.173.4.2
-      netmask 255.255.252.0
-       gateway 192.173.4.1
+        address 192.194.0.19
+        netmask 255.255.255.248
+        gateway 192.194.0.17
 ```
 
-- Elena
-
-```
-auto eth0
-iface eth0 inet static
-       address 192.173.2.2
-       netmask 255.255.254.0
-       gateway 192.173.2.1
-```
-
-- Fukurou
+- Garden
 
 ```
 auto eth0
 iface eth0 inet static
-       address 192.173.1.2
-       netmask 255.255.255.0
-       gateway 192.173.1.1
+          address 192.194.0.26
+          netmask 255.255.255.248
+          gateway 192.194.0.25
+```
+
+- SSS
+
+```
+auto eth0
+iface eth0 inet static
+          address 192.194.0.27
+          netmask 255.255.255.248
+          gateway 192.194.0.25
 ```
 
 - Maingate
@@ -162,45 +172,33 @@ iface eth0 inet static
        gateway 192.173.0.25
 ```
 
-- Jorge
+- Forger, Desmond, Blackbell, Briar
 
 ```
 auto eth0
-iface eth0 inet static
-       address 192.173.0.26
-       netmask 255.255.255.248
-       gateway 192.173.0.25
-```
-
-- Doriki
-
-```
-auto eth0
-iface eth0 inet static
-       address 192.173.0.18
-       netmask 255.255.255.248
-       gateway 192.173.0.17
-```
-
-- Jipangu
-
-```
-auto eth0
-iface eth0 inet static
-       address 192.173.0.19
-       netmask 255.255.255.248
-       gateway 192.173.0.17
+iface eth0 inet dhcp
 ```
 
 ### (C) Anya, putri pertama Loid, juga berpesan kepada anda agar melakukan Routing agar setiap perangkat pada jaringan tersebut dapat terhubung.
 
+- Strix
 ```
-route add -net 192.173.1.0 netmask 255.255.255.0 gw 192.173.0.6                                     
-route add -net 192.173.2.0 netmask 255.255.254.0 gw 192.173.0.6                                   
-route add -net 192.173.0.24 netmask 255.255.255.248 gw 192.173.0.6                                    
-route add -net 192.173.4.0 netmask 255.255.252.0 gw 192.173.0.2                                         
-route add -net 192.173.0.128 netmask 255.255.255.128 gw 192.173.0.2                                 
-route add -net 192.173.0.16 netmask 255.255.255.248 gw 192.173.0.2 
+route add -net 192.194.1.0 netmask 255.255.255.0 gw 192.194.0.6                                     
+route add -net 192.194.2.0 netmask 255.255.254.0 gw 192.194.0.6                                   
+route add -net 192.194.0.24 netmask 255.255.255.248 gw 192.194.0.6                                    
+route add -net 192.194.4.0 netmask 255.255.252.0 gw 192.194.0.2                                         
+route add -net 192.194.0.128 netmask 255.255.255.128 gw 192.194.0.2                                 
+route add -net 192.194.0.16 netmask 255.255.255.248 gw 192.194.0.2 
+```
+
+- Ostania
+```
+route add -net 0.0.0.0 netmask 0.0.0.0 gw 192.194.0.5
+```
+
+- Westalis
+```
+route add -net 0.0.0.0 netmask 0.0.0.0 gw 192.194.0.1
 ```
 
 ### (D) Tugas berikutnya adalah memberikan ip pada subnet Forger, Desmond, Blackbell, dan Briar secara dinamis menggunakan bantuan DHCP server. Kemudian kalian ingat bahwa kalian harus setting DHCP Relay pada router yang menghubungkannya.
