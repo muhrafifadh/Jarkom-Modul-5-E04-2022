@@ -203,66 +203,115 @@ route add -net 0.0.0.0 netmask 0.0.0.0 gw 192.194.0.1
 
 ### (D) Tugas berikutnya adalah memberikan ip pada subnet Forger, Desmond, Blackbell, dan Briar secara dinamis menggunakan bantuan DHCP server. Kemudian kalian ingat bahwa kalian harus setting DHCP Relay pada router yang menghubungkannya.
 
-1. Install `apt-get install isc-dhcp-relay -y` pada foosha, water7, dan guanhao, `apt-get install isc-dhcp-server` pada Jipangu
-2. Pada Router (foosha, water7 dan guanhao) Edit file `/etc/sysctl.conf` deengan command
-    ```
-    net.ipv4.ip_forward=1
-    net.ipv4.conf.all.accept_source_route = 1
-    ```
-3. Lakukan sysctl -p
-4. Buka `file /etc/default/isc-dhcp-relay` dan edit server dengan mengarahkan dchp-relay menuju Jipangu `192.173.0.19` lalu `service isc-dhcp-relay restart` pada foosha, water7, dan guanhao
+# DHCP
+# STRIX
 ```
-echo '# What servers should the DHCP relay forward requests to?
-SERVERS="192.173.0.19"
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 192.194.0.0/21
+```
 
-# On what interfaces should the DHCP relay (dhrelay) serve DHCP requests?
-INTERFACES=""
+# WISE
+```
+echo "nameserver 192.168.122.1" > /etc/resolv.conf
+apt-get update
+apt-get install isc-dhcp-server -y
 
-# Additional options that are passed to the DHCP relay daemon?
-OPTIONS="" '> /etc/default/isc-dhcp-relay
-```
-5. Pada Jipangu edit file `/etc/default/isc-dhcp-server` dengan menambahkan:
-`INTERFACES="eth0"`
-6. Pada dhcp-server isikan data pada `/etc/dhcp/dhcpd.conf` di Jipangu, lalu lakukan `service isc-dhcp-server restart`
-```
-subnet 192.173.1.0 netmask 255.255.255.0 {
-    range 192.173.1.2 192.173.1.254;
-    option routers 192.173.1.1;
-    option broadcast-address 192.173.1.255;
-    option domain-name-servers 192.173.0.18;
-    default-lease-time 600;
-    max-lease-time 7200;
-}
-subnet 192.173.0.128 netmask 255.255.255.128 {
-    range 192.173.0.130 192.173.0.254;
-    option routers 192.173.0.129;
-    option broadcast-address 192.173.0.255;
-    option domain-name-servers 192.173.0.18;
-    default-lease-time 600;
-    max-lease-time 7200;
-}
-subnet 192.173.4.0 netmask 255.255.252.0 {
-    range 192.173.4.2 192.173.4.254;
-    option routers 192.173.4.1;
-    option broadcast-address 192.173.4.255;
-    option domain-name-servers 192.173.0.18;
-    default-lease-time 600;
-    max-lease-time 7200;
-}
-subnet 192.173.2.0 netmask 255.255.254.0 {
-    range 192.173.2.2 192.173.2.254;
-    option routers 192.173.2.1;
-    option broadcast-address 192.173.2.255;
-    option domain-name-servers 192.173.0.18;
-    default-lease-time 600;
-    max-lease-time 7200;
-}
-subnet 192.173.0.16 netmask 255.255.255.248{
-}
-```
-7. Buka file `/etc/network/interfaces`. Command konfigurasi lama (static) dan ubah ip Blueno, Cipher, Fukurou, dan Elena dengan command
-8. Lakukan restart di node yang dijadikan ip dhcp
+echo ‘INTERFACES="eth0" ‘ > /etc/default/isc-dhcp-server
 
+# Forger
+subnet 192.194.0.128 netmask 255.255.255.128 {
+        range 192.194.0.130 192.194.0.254;
+        option routers 192.194.0.129;
+        option broadcast-address 192.194.0.255;
+        option domain-name-servers 192.194.0.18;
+        default-lease-time 600;
+        max-lease-time 7200;
+}
+
+# Desmond
+subnet 192.194.4.0 netmask 255.255.252.0 {
+    range 192.194.4.2 192.194.4.254;
+    option routers 192.194.4.1;
+    option broadcast-address 192.194.4.255;
+    option domain-name-servers 192.194.0.18;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+
+
+# Blackbell
+subnet 192.194.2.0 netmask 255.255.254.0 {
+    range 192.194.2.2 192.194.2.254;
+    option routers 192.194.2.1;
+    option broadcast-address 192.194.2.255;
+    option domain-name-servers 192.194.0.18;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+
+# Briar
+subnet 192.194.1.0 netmask 255.255.255.0 {
+    range 192.194.1.2 192.194.1.254;
+    option routers 192.194.1.1;
+    option broadcast-address 192.194.1.255;
+    option domain-name-servers 192.194.0.18;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+
+# Open way to router
+subnet 192.194.0.16 netmask 255.255.255.248 {
+        option routers 192.194.0.17;
+```
+
+# RELAY
+# Westalis, Ostania
+```
+echo "nameserver 192.168.122.1" > /etc/resolv.conf
+apt-get update
+apt-get install isc-dhcp-relay -y
+
+echo ‘
+SERVERS="192.194.0.19"
+
+INTERFACES="eth0 eth1 eth2 eth3"
+
+OPTIONS=""
+‘ > /etc/default/isc-dhcp-relay
+
+service isc-dhcp-relay restart
+```
+
+# DNS SERVER
+
+# Eden
+```
+echo "nameserver 192.168.122.1" > /etc/resolv.conf
+apt-get update
+apt-get install bind9 -y
+
+echo ’
+options {
+        directory "/var/cache/bind";
+        forwarders {
+                192.168.122.1;
+        };
+        allow-query { any; };
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+};’ > /etc/bind/named.conf.options
+
+service bind9 restart
+```
+# WEB SERVER
+
+# Garden, SSS
+```
+echo "nameserver 192.168.122.1" > /etc/resolv.conf
+apt-get update
+apt-get install apache2 -y
+service apache2 start
+service apache2 start
+```
 ## (1) Agar topologi yang kalian buat dapat mengakses keluar, kalian diminta untuk mengkonfigurasi Strix menggunakan iptables, tetapi Loid tidak ingin menggunakan MASQUERADE.
 
 #### Strix 
