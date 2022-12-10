@@ -267,16 +267,18 @@ subnet 192.173.0.16 netmask 255.255.255.248{
 
 ## (1) Agar topologi yang kalian buat dapat mengakses keluar, kalian diminta untuk mengkonfigurasi Strix menggunakan iptables, tetapi Loid tidak ingin menggunakan MASQUERADE.
 
-#### Foosha 
+#### Strix 
 
-Command yang digunakan `iptables -t nat -A POSTROUTING -s 192.173.0.0/16 -o eth0 -j SNAT --to-s` (ip eth0) yang menyesuaikan dari eth0 tersebut
-
-Lalu, pada semua node yang terkait dilakukan echo nameserver `192.168.122.1 > /etc/resolv.conf`
+Command yang digunakan `iptables -t nat -A POSTROUTING -s 192.194.0.0/21 -o eth0 -j SNAT --to-s` (ip eth0) yang menyesuaikan dari eth0 tersebut
 
 Keterangan:
 
 -> ip eth0 akan selalu berganti ketika restart node pada foosha atau restart GNS3 dengan rentang IP yang sudah dijelaskan
--> Cara mengetahui eth0, masukan command ip a pada foosha
+-> Cara mengetahui eth0, masukan command ip a pada Strix
+
+Test ping google.com di Blackbell:
+
+<img width="554" alt="image" src="https://user-images.githubusercontent.com/87472849/206823081-0263d992-3e16-47b9-9b89-fb73496b1397.png">
 
 ## (2) Kalian diminta untuk melakukan drop semua TCP dan UDP dari luar Topologi kalian pada server yang merupakan DHCP Server demi menjaga keamanan.
 
