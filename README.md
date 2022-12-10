@@ -282,32 +282,26 @@ Test ping google.com di Blackbell:
 
 ## (2) Kalian diminta untuk melakukan drop semua TCP dan UDP dari luar Topologi kalian pada server yang merupakan DHCP Server demi menjaga keamanan.
 
-Command yang digunakan yaitu `iptables -A FORWARD -p tcp --dport 80 -d 192.173.0.16/29 -i eth0 -j DROP`
+Command yang digunakan yaitu :
+
+### Strix
+
+`iptables -A FORWARD -p tcp --dport 80 -d 192.194.0.16/29 -i eth0 -j DROP` dan `iptables -A FORWARD -p udp --dport 80 -d 192.194.0.16/29 -i eth0 -j DROP`
 
 Keterangan:
 - `A FORWARD:` Menggunakan chain FORWARD
 - `p tcp:` Mendefinisikan protokol yang digunakan, yaitu tcp
+- `p udp:` Mendefinisikan protokol yang digunakan, yaitu udp
 - `dport 80:` Mendefinisikan port yang digunakan, yaitu 80 (HTTP)
-- `d 192.173.0.16/29:` Mendefinisikan alamat tujuan dari paket (DHCP dan DNS SERVER ) berada pada subnet 192.173.0.16/29
-- `i eth0:` Paket masuk dari eth0 Foosha
+- `d 192.194.0.16/29:` Mendefinisikan alamat tujuan dari paket (DHCP dan DNS SERVER ) berada pada subnet 192.194.0.16/29
+- `i eth0:` Paket masuk dari eth0 Strix
 - `j DROP:` Paket di-drop
 
 #### Testing
 
-1. Install netcat di server Jipangu dan Doriki: `apt-get install netcat`
-2. Pada Jipangu dan Doriki ketikkan: `nc -l -p 80`
-3. Pada foosha ketikkan: `nmap -p 80 192.173.0.19` atau `nmap -p 80 192.173.0.18`
-
-#### Foosha
-![messageImage_1638870785918](https://user-images.githubusercontent.com/36225278/145457234-60fba7a4-1356-40eb-a32d-3ecc7e16ae2c.jpg)
-![image](https://user-images.githubusercontent.com/36225278/145457134-3c68dcd0-8aeb-47c0-9929-7764e5f8b122.png)
-
-#### Doriki
-![messageImage_1638870718188](https://user-images.githubusercontent.com/36225278/145457706-c64452ac-463f-40f5-95e0-00dfa6cf0235.jpg)
-
-#### Jipangu
-![messageImage_1638870734466](https://user-images.githubusercontent.com/36225278/145457665-ed2a9e32-b39d-4720-993a-b76fb1173d4d.jpg)
-
+1. Install netcat di server Wise dan Eden: `apt-get install netcat`
+2. Pada Wise dan Eden ketikkan: `nc -l -p 80`
+3. Pada Strix ketikkan: `nmap -p 80 192.194.0.19` atau `nmap -p 80 192.194.0.18`
 
 ## (3) Loid meminta kalian untuk membatasi DHCP dan DNS Server hanya boleh menerima maksimal 2 koneksi ICMP secara bersamaan menggunakan iptables, selebihnya didrop.
 
