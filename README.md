@@ -337,37 +337,27 @@ Pada saat yang ke-3 mengakses node yang sama, maka ditolak </br>
 <img width="498" alt="image" src="https://user-images.githubusercontent.com/87472849/206823498-8a0a432d-a55e-4258-810a-f170df3af675.png">
 
 ## (4) Akses menuju Web Server hanya diperbolehkan disaat jam kerja yaitu Senin sampai Jumat pada pukul 07.00 - 16.00.
-#### Doriki
+#### Garden dan SSS
 ```
-iptables -A INPUT -s 192.173.0.128/25 -m time --timestart 07:00 --timestop 15:00 --weekdays Mon,Tue,Wed,Thu -j ACCEPT
-iptables -A INPUT -s 192.173.0.128/25 -j REJECT
-```
-
-#### Chiper
-```
-iptables -A INPUT -s 192.173.4.0/22 -m time --timestart 07:00 --timestop 15:00 --weekdays Mon,Tue,Wed,Thu -j ACCEPT
-iptables -A INPUT -s 192.173.4.0/22 -j REJECT
+iptables -A INPUT -s 192.194.0.128/25 -m time --timestart 07:00 --timestop 16:00 --weekdays Mon,Tue,Wed,Thu,Fri -j ACCEPT
+iptables -A INPUT -s 192.194.0.128/25 -j REJECT
 ```
 
 Keterangan:
 
 - `A INPUT :` Menggunakan chain INPUT
-- `s 192.173.0.128/25 :` Mendifinisikan alamat asal dari paket yaitu IP dari subnet Blueno
-- `s 192.173.4.0/22 :` Mendifinisikan alamat asal dari paket yaitu IP dari subnet Chiper
+- `s 192.194.0.128/25 :` Mendifinisikan alamat asal dari paket yaitu IP dari subnet Forger
 - `m time :` Menggunakan rule time
 - `timestart 07:00 :` Mendefinisikan waktu mulai yaitu 07:00
-- `timestop 15:00:` Mendefinisikan waktu berhenti yaitu 15:00
-- `weekdays Mon,Tue,Wed,Thu :` Mendefinisikan hari yaitu Senin hingga Kamis
+- `timestop 16:00:` Mendefinisikan waktu berhenti yaitu 16:00
+- `weekdays Mon,Tue,Wed,Thu,Fri :` Mendefinisikan hari yaitu Senin hingga Jumat
 - `j ACCEPT :` Paket di-accept
 - `j REJECT :` Paket ditolak
 
 ### Testing
 
-Saat Hari Senin - Kamis antara jam 07.00 - 15.00
-![image](https://user-images.githubusercontent.com/36225278/145458400-03be2876-9647-46f6-87bd-c6b633e8e613.png)
-
-Saat Hari Senin - Kamis selain jam 07.00 - 15.00
-![image](https://user-images.githubusercontent.com/36225278/145458662-d1c9658d-eb8a-4ac0-a60a-ede0820beef4.png)
+Saat Hari Senin - Jumat antara jam 07.00 - 16.00
+<img width="441" alt="image" src="https://user-images.githubusercontent.com/87472849/206823925-1225df63-5a28-4176-ad6e-b4474d2709fb.png">
 
 ## (5) Karena kita memiliki 2 Web Server, Loid ingin Ostania diatur sehingga setiap request dari client yang mengakses Garden dengan port 80 akan didistribusikan secara bergantian pada SSS dan Garden secara berurutan dan request dari client yang mengakses SSS dengan port 443 akan didistribusikan secara bergantian pada Garden dan SSS secara berurutan.
 
