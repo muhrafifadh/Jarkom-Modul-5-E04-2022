@@ -305,39 +305,36 @@ Keterangan:
 
 ## (3) Loid meminta kalian untuk membatasi DHCP dan DNS Server hanya boleh menerima maksimal 2 koneksi ICMP secara bersamaan menggunakan iptables, selebihnya didrop.
 
-#### Jipangu dan Doriki
+#### Eden dan Wise
 Diberikan komen:
 ```
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -p icmp -m connlimit --connlimit-above 3 --connlimit-mask 0 -j DROP
+iptables -A INPUT -p icmp -m connlimit --connlimit-above 2 --connlimit-mask 0 -j DROP
 ```
 
 Keterangan:
 - `A INPUT:` Menggunakan chain INPUT
 - `p icmp:` Mendefinisikan protokol yang digunakan, yaitu ICMP (ping)
 - `m connlimit:` Menggunakan rule connection limit
-- `connlimit-above 3:` Limit yang ditangkap paket adalah di atas 3
+- `connlimit-above 2:` Limit yang ditangkap paket adalah di atas 2
 - `connlimit-mask 0 :` Hanya memperbolehkan 3 koneksi setiap subnet dalam satu waktu
 - `j DROP:` Paket di-drop
 
-Lalu untuk mengecek bisa dilakukan dengan masuk ke 4 node berbeda
-Lalu, ping ke arah Jipangu secara bersamaan.
+Lalu untuk mengecek bisa dilakukan dengan masuk ke 3 node berbeda
+Lalu, ping ke arah WISE secara bersamaan.
 
 ### Testing
-Kita ping ke Jipangu secara bersamaan,
+Kita ping ke WISE secara bersamaan,
 
-#### Foosha
-![messageImage_1639067277163](https://user-images.githubusercontent.com/36225278/145457931-6bf1e091-1289-4c70-9aaf-b8ff0afd3ad9.jpg)
+#### Westalis
+<img width="504" alt="image" src="https://user-images.githubusercontent.com/87472849/206823458-aa2c165f-837b-40af-ab8d-c8c7c1567759.png">
 
-#### Fukurou
-![messageImage_1639067269426](https://user-images.githubusercontent.com/36225278/145457991-3888f300-a6f9-4269-8d3e-042a2e2bda36.jpg)
+#### Strix
+<img width="507" alt="image" src="https://user-images.githubusercontent.com/87472849/206823475-11d80c2e-7759-4bb4-ba43-0434e7264582.png">
 
-#### Maingate
-![messageImage_1639067260886](https://user-images.githubusercontent.com/36225278/145458046-527e03e9-38db-46f8-8bde-3ce72c92f43f.jpg)
-
-#### Elena
-Pada saat yang ke-4 mengakses node yang sama, maka ditolak
-![messageImage_1639067251507](https://user-images.githubusercontent.com/36225278/145460468-d2eef565-ba96-4c46-bab7-596b08ed6f20.jpg)
+#### Garden
+Pada saat yang ke-3 mengakses node yang sama, maka ditolak </br>
+<img width="498" alt="image" src="https://user-images.githubusercontent.com/87472849/206823498-8a0a432d-a55e-4258-810a-f170df3af675.png">
 
 ## (4) Akses menuju Web Server hanya diperbolehkan disaat jam kerja yaitu Senin sampai Jumat pada pukul 07.00 - 16.00.
 #### Doriki
