@@ -361,95 +361,69 @@ Saat Hari Senin - Jumat antara jam 07.00 - 16.00
 
 ## (5) Karena kita memiliki 2 Web Server, Loid ingin Ostania diatur sehingga setiap request dari client yang mengakses Garden dengan port 80 akan didistribusikan secara bergantian pada SSS dan Garden secara berurutan dan request dari client yang mengakses SSS dengan port 443 akan didistribusikan secara bergantian pada Garden dan SSS secara berurutan.
 
-#### Doriki 
-Untuk paket yang berasal dari ELENA menggunakan perintah:
-`iptables -A INPUT -s 192.173.2.0/23 -m time --timestart 07:00 --timestop 15:00 -j REJECT`
-Untuk paket yang berasal dari FUKUROU menggunakan perintah:
-`iptables -A INPUT -s 192.173.1.0/24 -m time --timestart 07:00 --timestop 15:00 -j REJECT`
-
-Keterangan:
-
-- `A INPUT :` Menggunakan chain INPUT
-- `s 192.173.2.0/23 :` Mendifinisikan alamat asal dari paket yaitu IP dari subnet Elena
-- `s 192.173.1.0/24 :` Mendifinisikan alamat asal dari paket yaitu IP dari subnet Fukurou
-- `m time :` Menggunakan rule time
-- `timestart 07:00 :` Mendefinisikan waktu mulai yaitu 07:00
-- `timestop 15:00 :` Mendefinisikan waktu berhenti yaitu 15:00
-- `j REJECT :` Paket ditolak
-
-### Testing
-
-Saat pukul 15.01 - 06.59
-![messageImage_1639067928444](https://user-images.githubusercontent.com/36225278/145459102-2c77d50d-8343-4a0b-9601-ce775f9c8dc1.jpg)
-
-Saat selain pukul 15.01 - 06.59
-![messageImage_1639067956156](https://user-images.githubusercontent.com/36225278/145459126-7f6c8580-cef2-43fd-9aa4-013d59dc0ed4.jpg)
-
-
-## (6) Karena Loid ingin tau paket apa saja yang di-drop, maka di setiap node server dan router ditambahkan logging paket yang di-drop dengan standard syslog level.
-
-#### Doriki
+#### Eden
 - Membuat domain (DNS) yang mengarah ke IP random pada file `/etc/bind/named.conf`
 ```
-zone "jarkomA09.com" {
+echo ‘
+zone "jarkomE04.com" {
         type master;
-        file "/etc/bind/jarkom/jarkomA09.com";
-};
-```
-- Buat folder jarkom dengan command:
-`mkdir /etc/bind/jarkom`
-- Copy `db.local` ke file `/etc/bind/jarkom/jarkomA09.com`
-```
-cp /etc/bind/db.local /etc/bind/jarkom/jarkomA09.com
-```
+        file "/etc/bind/jarkom/jarkomE04.com";
+}; ‘ > /etc/bind/named.conf
 
-- Edit file `/etc/bind/jarkom/jarkomA09.com`
-```
+mkdir /etc/bind/jarkom
+
+cp /etc/bind/db.local /etc/bind/jarkom/jarkomE04.com
+
+nano ‘
 $TTL    604800
-@       IN      SOA     jarkomA09.com. root.jarkomA09.com. (
-                        2021120705      ; Serial
+@       IN      SOA     jarkomE04.com. root.jarkomE04.com. (
+                        2022120705      ; Serial
                          604800         ; Refresh
                           86400         ; Retry
                         2419200         ; Expire
                          604800 )       ; Negative Cache TTL
 ;
-@       IN      NS      jarkomA09.com.
-@       IN      A       192.173.8.1
+@       IN      NS      jarkomE04.com.
+@       IN      A       192.194.8.1
+‘ > /etc/bind/jarkom/jarkomE04.com
+
+service bind9 restart
 ```
 
-#### Guanhao
+#### Ostania
 
 Masukkan perintah:
 ```
-iptables -A PREROUTING -t nat -p tcp -d 192.173.8.1 --dport 80 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination 192.173.0.26:80
-iptables -A PREROUTING -t nat -p tcp -d 192.173.8.1 --dport 80 -j DNAT --to-destination 192.173.0.27:80
-iptables -t nat -A POSTROUTING -p tcp -d 192.173.0.26 --dport 80 -j SNAT --to-source 192.173.8.1:80
-iptables -t nat -A POSTROUTING -p tcp -d 192.173.0.27 --dport 80 -j SNAT --to-source 192.173.8.1:80
+ptables -A PREROUTING -t nat -p tcp -d 192.194.8.1 --dport 80 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination 192.194.0.27:80
+iptables -A PREROUTING -t nat -p tcp -d 192.194.8.1 --dport 80 -j DNAT --to-destination 192.194.0.26:80
+iptables -t nat -A POSTROUTING -p tcp -d 192.194.0.27 --dport 80 -j SNAT --to-source 192.194.8.1:80
+iptables -t nat -A POSTROUTING -p tcp -d 192.194.0.26 --dport 80 -j SNAT --to-source 192.194.8.1:80
+
+iptables -A PREROUTING -t nat -p tcp -d 192.194.8.1 --dport 443 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination 192.194.0.26:443 
+iptables -A PREROUTING -t nat -p tcp -d 192.194.8.1 --dport 443 -j DNAT --to-destination 192.194.0.27:443 
+iptables -t nat -A POSTROUTING -p tcp -d 192.194.0.26 --dport 443 -j SNAT --to-source 192.194.8.1:443 
+iptables -t nat -A POSTROUTING -p tcp -d 192.194.0.27 --dport 443 -j SNAT --to-source 192.194.8.1:443 
 ```
 
 #### Testing
-- Pada Guanhao, Jorge, Maingate Elena dan fukurou `install apt-get install netcat`
-- Pada Jorge ketikkan perintah: `nc -l -p 80`
-- Pada Maingate ketikkan perintah: `nc -l -p 80`
-- Pada client Elena dan fukurou ketikkan perintah: `nc 192.173.8.1 80`
-- Ketikkan sembarang pada client Elena dan fukurou, nanti akan muncul bergantian
+- Pada Garden, SSS, Blackbell, Briar `install apt-get install netcat`
+- Pada Garden dan SSS ketikkan perintah: `nc -l -p 80`
+- Pada client Blackbell dan Briar ketikkan perintah: `nc 192.194.8.1 80`
+- Ketikkan sembarang pada clientBlackbell dan Briar, nanti akan muncul bergantian
 
-#### Elena
-![image](https://user-images.githubusercontent.com/36225278/145459790-e52782dd-2221-49c9-97f3-aaf70450f7f7.png)
+#### Briar
+<img width="215" alt="image" src="https://user-images.githubusercontent.com/87472849/206824305-b446d159-4dca-4ad4-ba14-5e6060cd9b09.png">
 
-#### Fukurou
-![image](https://user-images.githubusercontent.com/36225278/145459760-954a3319-12bd-40e0-aeb1-5070a4b09321.png)
+#### Garden
+<img width="185" alt="image" src="https://user-images.githubusercontent.com/87472849/206824316-cd0dab67-064e-4c42-a07e-6af2ef232e52.png">
 
-#### Jorge
-![image](https://user-images.githubusercontent.com/36225278/145459805-5b2e2973-1f1d-4e39-bda4-524b4a5771ee.png)
 
-#### Maingate
-![image](https://user-images.githubusercontent.com/36225278/145459822-0646a6fd-46f8-4474-9463-857ae8d6459e.png)
+## (6) Karena Loid ingin tau paket apa saja yang di-drop, maka di setiap node server dan router ditambahkan logging paket yang di-drop dengan standard syslog level.
+
+
 
 ### Kendala:
 
 - Kendala pada jaringan internet sehingga restart node dan menjalankan ulang scriptnya
-- Nomor 1 ketika mencari IP nat pada source sempat kesulitan dan vlsm juga masih kagok
-- Nomor 2 masih bingung ketika di bash, output port 80 udah filtered tapi ketika di jalankan kembali outputnya open
-- Nomor 3 pada saat 4 node secara bersamaan semua ping menuju doriki atau jipangu mati
-- Nomor 6 bingung ketika testingnya awal" karena masih awam
+- Nomor 2 masih kendala dalam memfilter paketnya
+- Nomor 6 masih bingung cara mengerjakannya
